@@ -541,7 +541,99 @@ el('hedgeForm').addEventListener('submit', async function (e) {
 // DASHBOARD (Using Fetch)
 // ============================================
 
+// Store dashboard data globally for widget updates
+let dashboardData = [];
+
+// Calculate widget values based on selected commodity/contract
+function calculateWidgetValues(rows, filterCommodity, filterContract) {
+    let totalSellLots = 0;
+    let totalSellValue = 0;
+    let totalBuyLots = 0;
+    let totalBuyValue = 0;
+
+    rows.forEach(row => {
+        const comm = row[1];
+        const contract = row[7];
+        const reason = row[4];
+        const lots = parseFloat(row[3]) || 0;
+        const avgPrice = parseFloat(row[9]) || 0;
+
+        // Apply filters
+        if (filterCommodity && comm !== filterCommodity) return;
+        if (filterContract && contract !== filterContract) return;
+
+        if (reason === 'Sell') {
+            totalSellLots += lots;
+            totalSellValue += lots * avgPrice;
+        } else if (reason === 'Buy' || reason === 'Rollover') {
+            totalBuyLots += lots;
+            totalBuyValue += lots * avgPrice;
+        }
+    });
+
+    // Calculations
+    const avgSell = totalSellLots > 0 ? totalSellValue / totalSellLots : 0;
+    const avgBuy = totalBuyLots > 0 ? totalBuyValue / totalBuyLots : 0;
+    const closedLots = Math.min(totalSellLots, totalBuyLots);
+
+    // PNL = (Avg Sell - Avg Buy) × Closed Lots × 1000 (MT to KG)
+    const pnl = (avgSell - avgBuy) * closedLots * 1000;
+
+    // Brokerage = Total lots × ₹100
+    const totalLots = totalSellLots + totalBuyLots;
+    const brokerage = totalLots * 100;
+
+    // Net Position = Sold - Bought
+    const netPosition = totalSellLots - totalBuyLots;
+
+    return { pnl, brokerage, netPosition, closedLots, totalLots, avgSell, avgBuy };
+}
+
+// Update widgets when dropdown changes
+function updateWidgets() {
+    const commodity = document.getElementById('widgetCommodity')?.value || '';
+    const contract = document.getElementById('widgetContract')?.value || '';
+
+    if (!dashboardData.length) return;
+
+    const rows = dashboardData.slice(1);
+    const calc = calculateWidgetValues(rows, commodity, contract);
+
+    // Update PNL
+    const pnlEl = document.getElementById('widgetPNL');
+    if (pnlEl) {
+        const pnlColor = calc.pnl >= 0 ? '#27ae60' : '#e74c3c';
+        const pnlSign = calc.pnl >= 0 ? '+' : '';
+        pnlEl.style.color = pnlColor;
+        pnlEl.textContent = `${pnlSign}₹${Math.abs(calc.pnl).toLocaleString('en-IN')}`;
+        pnlEl.nextElementSibling.textContent = `${calc.closedLots} closed lots`;
+    }
+
+    // Update Brokerage
+    const brokEl = document.getElementById('widgetBrokerage');
+    if (brokEl) {
+        brokEl.textContent = `₹${calc.brokerage.toLocaleString('en-IN')}`;
+        brokEl.nextElementSibling.textContent = `${calc.totalLots} total lots × ₹100`;
+    }
+
+    // Update Net Position
+    const netEl = document.getElementById('widgetNetPos');
+    if (netEl) {
+        const netColor = calc.netPosition === 0 ? '#27ae60' : (calc.netPosition > 0 ? '#e67e22' : '#e74c3c');
+        const netStatus = calc.netPosition === 0 ? 'Hedged' : (calc.netPosition > 0 ? 'Open Short' : 'Over-hedged');
+        netEl.style.color = netColor;
+        netEl.textContent = `${Math.abs(calc.netPosition)} lots`;
+        netEl.nextElementSibling.textContent = netStatus;
+    }
+}
+
+// Expose to window
+window.updateWidgets = updateWidgets;
+
 function renderDashboard(data) {
+    // Store data globally for widget updates
+    dashboardData = data;
+
     if (!data || data.length < 2) return '<p>No data available</p>';
 
     const rows = data.slice(1); // Skip header
@@ -604,6 +696,62 @@ function renderDashboard(data) {
 
     // 2. Generate HTML
     let html = '';
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // WIDGETS SECTION: Dropdowns + 3 Widget Cards
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Get unique commodities and contracts for dropdowns
+    const commodities = [...new Set(rows.map(r => r[1]).filter(Boolean))];
+    const contracts = [...new Set(rows.map(r => r[7]).filter(Boolean))];
+
+    html += '<div style="margin-bottom:20px; padding:15px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:10px;">';
+
+    // Dropdowns
+    html += '<div style="display:flex; gap:15px; margin-bottom:15px; flex-wrap:wrap;">';
+    html += '<select id="widgetCommodity" onchange="updateWidgets()" style="padding:8px 15px; border-radius:5px; border:none; font-size:14px; min-width:120px;">';
+    html += '<option value="">All Commodities</option>';
+    commodities.forEach(c => html += `<option value="${c}">${c}</option>`);
+    html += '</select>';
+    html += '<select id="widgetContract" onchange="updateWidgets()" style="padding:8px 15px; border-radius:5px; border:none; font-size:14px; min-width:120px;">';
+    html += '<option value="">All Contracts</option>';
+    contracts.forEach(c => html += `<option value="${c}">${c}</option>`);
+    html += '</select>';
+    html += '</div>';
+
+    // Widget Cards Container
+    html += '<div id="widgetCards" style="display:flex; gap:15px; flex-wrap:wrap;">';
+
+    // Calculate initial values (all data)
+    const initialCalc = calculateWidgetValues(rows, '', '');
+
+    // PNL Widget
+    const pnlColor = initialCalc.pnl >= 0 ? '#27ae60' : '#e74c3c';
+    const pnlSign = initialCalc.pnl >= 0 ? '+' : '';
+    html += `<div style="flex:1; min-width:150px; background:white; border-radius:8px; padding:15px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+        <div style="font-size:11px; color:#666; margin-bottom:5px;">Hedging PNL</div>
+        <div id="widgetPNL" style="font-size:20px; font-weight:bold; color:${pnlColor};">${pnlSign}₹${Math.abs(initialCalc.pnl).toLocaleString('en-IN')}</div>
+        <div style="font-size:10px; color:#999;">${initialCalc.closedLots} closed lots</div>
+    </div>`;
+
+    // Brokerage Widget
+    html += `<div style="flex:1; min-width:150px; background:white; border-radius:8px; padding:15px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+        <div style="font-size:11px; color:#666; margin-bottom:5px;">Brokerage</div>
+        <div id="widgetBrokerage" style="font-size:20px; font-weight:bold; color:#3498db;">₹${initialCalc.brokerage.toLocaleString('en-IN')}</div>
+        <div style="font-size:10px; color:#999;">${initialCalc.totalLots} total lots × ₹100</div>
+    </div>`;
+
+    // Net Position Widget
+    const netColor = initialCalc.netPosition === 0 ? '#27ae60' : (initialCalc.netPosition > 0 ? '#e67e22' : '#e74c3c');
+    const netStatus = initialCalc.netPosition === 0 ? 'Hedged' : (initialCalc.netPosition > 0 ? 'Open Short' : 'Over-hedged');
+    html += `<div style="flex:1; min-width:150px; background:white; border-radius:8px; padding:15px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+        <div style="font-size:11px; color:#666; margin-bottom:5px;">Net Position</div>
+        <div id="widgetNetPos" style="font-size:20px; font-weight:bold; color:${netColor};">${Math.abs(initialCalc.netPosition)} lots</div>
+        <div style="font-size:10px; color:#999;">${netStatus}</div>
+    </div>`;
+
+    html += '</div>'; // widgetCards
+    html += '</div>'; // widgets section
 
     // ═══════════════════════════════════════════════════════════════════════
     // SECTION 1: Summary By Commodity & Contract (GREEN HEADER)
