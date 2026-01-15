@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Local development files
+cors-proxy.js
+
+# Build output (if any)
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
+
+# Backend reference files (not needed for production)
+backend.js
+Code.gs

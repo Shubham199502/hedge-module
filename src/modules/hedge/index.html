@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Hedge Position Entry</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Dashboard Button (New Feature) -->
+    <div style="position:fixed; top:15px; right:15px; z-index:100;">
+        <button onclick="openDashboard()"
+            style="padding:8px 15px; background:var(--secondary); color:#fff; border:none; border-radius:6px; cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.1);">📊
+            View Dashboard</button>
+    </div>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>📊 Hedge Position Entry</h2>
+            <p>MCX Hedging & PnL Management</p>
+        </div>
+        <form id="hedgeForm">
+            <!-- Trade Details Section -->
+            <div class="form-section">
+                <div class="section-title">📅 Trade Details</div>
+                <div class="form-row">
+                    <label>Date <span class="required">*</span></label>
+                    <input type="date" name="date">
+                </div>
+                <div class="form-row">
+                    <label>Commodity <span class="required">*</span></label>
+                    <select name="commodity" id="commodity">
+                        <option value="">Select commodity...</option>
+                        <option value="Al">Al (Aluminium)</option>
+                        <option value="Cu">Cu (Copper)</option>
+                        <option value="Zn">Zn (Zinc)</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Product Type <span class="required">*</span></label>
+                    <select name="productType" id="productType">
+                        <option value="">Select product type...</option>
+                        <option value="IE07">IE07</option>
+                        <option value="SE07">SE07</option>
+                        <option value="Billets">Billets</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Contract Month <span class="required">*</span></label>
+                    <select name="contract" id="contract">
+                        <option value="">Select contract month...</option>
+                        <option value="Jan">January</option>
+                        <option value="Feb">February</option>
+                        <option value="Mar">March</option>
+                        <option value="Apr">April</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June</option>
+                        <option value="Jul">July</option>
+                        <option value="Aug">August</option>
+                        <option value="Sep">September</option>
+                        <option value="Oct">October</option>
+                        <option value="Nov">November</option>
+                        <option value="Dec">December</option>
+                    </select>
+                </div>
+                <div class="form-row" id="nextContractRow" style="display:none;">
+                    <label>Next Contract Month <span class="required">*</span></label>
+                    <select name="nextContract" id="nextContract">
+                        <option value="">Select next contract month...</option>
+                        <option value="Jan">January</option>
+                        <option value="Feb">February</option>
+                        <option value="Mar">March</option>
+                        <option value="Apr">April</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June</option>
+                        <option value="Jul">July</option>
+                        <option value="Aug">August</option>
+                        <option value="Sep">September</option>
+                        <option value="Oct">October</option>
+                        <option value="Nov">November</option>
+                        <option value="Dec">December</option>
+                    </select>
+                    <div class="info-text">Position will shift from current to next contract</div>
+                </div>
+                <div class="form-row">
+                    <label>Lots <span class="required">*</span></label>
+                    <input type="number" name="lots" id="lotsInput" step="1" min="1" placeholder="Enter lot quantity">
+                </div>
+                <div class="form-row">
+                    <label>Transaction Type <span class="required">*</span></label>
+                    <select name="reason" id="reason">
+                        <option value="">Select transaction type...</option>
+                        <option value="Sell">🔴 Sell (Open Position)</option>
+                        <option value="Buy">🟢 Buy (Close Position)</option>
+                        <option value="Rollover">🔄 Rollover</option>
+                    </select>
+                    <div id="validationMsg"></div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <!-- Trader & Price Section -->
+            <div class="form-section">
+                <div class="section-title">👤 Trader & Pricing</div>
+                <div class="form-row">
+                    <label>Trader Name <span class="required">*</span></label>
+                    <select name="trader">
+                        <option value="">Select trader...</option>
+                        <option value="Rakesh Bhai">Rakesh Bhai</option>
+                        <option value="Shubham">Shubham</option>
+                    </select>
+                </div>
+                <div class="form-row" id="avgPriceRow">
+                    <label>Average Price <span class="required">*</span></label>
+                    <div class="price-input-group">
+                        <input type="number" name="avgPrice" id="avgPrice" step="0.01" min="0" placeholder="₹ 0.00">
+                        <button type="button" class="calc-icon-btn" onclick="openCalculator()"
+                            title="Open Price Calculator">🧮</button>
+                    </div>
+                    <div class="info-text">Use calculator for multiple trades average</div>
+                </div>
+                <div class="form-row" id="rolloverGainsRow" style="display:none;">
+                    <label>Rollover Gains/Loss <span class="required">*</span></label>
+                    <input type="number" name="rolloverGains" id="rolloverGains" step="0.01"
+                        placeholder="₹ e.g., +2 or -1.5">
+                    <div class="info-text" id="rolloverInfo"></div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <!-- Counterparty Section -->
+            <div class="form-section">
+                <div class="section-title">🤝 Counterparty Details</div>
+                <div class="form-row" id="supplierRow" style="display:none;">
+                    <label>Supplier Name <span class="required">*</span></label>
+                    <input type="text" name="supplierName" id="supplierName" placeholder="Enter supplier name">
+                    <div class="info-text">New inventory code will be auto-generated</div>
+                </div>
+                <div class="form-row" id="inventoryRow" style="display:none;">
+                    <label>Select Inventory Codes <span class="required">*</span></label>
+                    <div id="inventoryTable" style="display:none;">
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 12px;">
+                            <thead>
+                                <tr style="background: #f0f0f0; border-bottom: 2px solid #e8e8e8;">
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
+                                        Select</th>
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
+                                        Inventory Code</th>
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
+                                        Available</th>
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">To
+                                        Buy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody"></tbody>
+                        </table>
+                    </div>
+                    <select id="inventoryCode" style="display:none;">
+                        <option value="">First select Commodity & Contract</option>
+                    </select>
+                    <div class="info-text">Select inventory codes and specify quantity for each (Sold > Bought)</div>
+                </div>
+                <div class="form-row" id="buyerRow" style="display:none;">
+                    <label>Buyer Name</label>
+                    <input type="text" name="buyerName" placeholder="Enter buyer name (optional)">
+                </div>
+            </div>
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Submit Entry</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Calculator Modal -->
+    <div id="calcModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🧮 Average Price Calculator</h3>
+                <button type="button" class="close-btn" onclick="closeCalculator()">×</button>
+            </div>
+            <div id="calcRows">
+                <div class="calc-row">
+                    <input type="number" class="calc-lots" placeholder="Lots" min="0" step="1">
+                    <input type="number" class="calc-price" placeholder="Price ₹" min="0" step="0.01">
+                    <button type="button" onclick="removeRow(this)">×</button>
+                </div>
+            </div>
+            <button type="button" class="add-row-btn" onclick="addCalcRow()">+ Add More Trades</button>
+            <div id="calcResult" class="calc-result" style="display:none;">
+                <h4>📊 Calculation Result</h4>
+                <p><strong>Total Lots:</strong> <span id="totalLots">0</span></p>
+                <p><strong>Weighted Average:</strong> ₹<span id="avgPriceCalc">0.00</span></p>
+            </div>
+            <button type="button" class="use-price-btn" onclick="usePriceAndClose()">✅ Use This Price</button>
+        </div>
+    </div>
+
+    <!-- Form Popup Modal -->
+    <div id="formPopup" class="modal">
+        <div class="modal-content" style="max-width:400px; text-align:center;">
+            <div class="modal-header">
+                <h3 id="formPopupTitle">Message</h3>
+                <button type="button" class="close-btn" onclick="hidePopup()">×</button>
+            </div>
+            <div id="formPopupBody" style="padding: 10px 5px; font-size:14px;"></div>
+            <div style="margin-top:16px;">
+                <button type="button" class="use-price-btn" onclick="hidePopup()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal (New) -->
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content" style="max-width:800px; max-height:90vh;">
+            <div class="modal-header">
+                <h3>📊 Dashboard & Inventory</h3>
+                <button class="close-btn"
+                    onclick="document.getElementById('dashboardModal').style.display='none'">×</button>
+            </div>
+            <div id="dashboardContent" style="font-size:12px; overflow-x:auto;"></div>
+            <div style="margin-top:15px; text-align:right;">
+                <button onclick="document.getElementById('dashboardModal').style.display='none'" class="use-price-btn"
+                    style="width:auto; display:inline-block; margin:0;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="backend.js"></script>
+    <script src="main.js"></script>
+    <script>
+        function openDashboard() {
+            const html = window.appBackend.renderDashboard();
+            document.getElementById('dashboardContent').innerHTML = html;
+            document.getElementById('dashboardModal').style.display = 'block';
+        }
+    </script>
+
+</body>
+
+</html>

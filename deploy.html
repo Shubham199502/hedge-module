@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Hedge Position Entry</title>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --dark: #2c3e50;
+            --light: #f0f0f0;
+            --border: #e8e8e8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 15px;
+            font-size: 13px;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .15);
+            padding: 20px;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .form-header h2 {
+            color: var(--dark);
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .form-header p {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .form-section {
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .form-row {
+            margin-bottom: 16px;
+            position: relative;
+            animation: slideIn .3s ease;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--dark);
+            font-size: 13px;
+        }
+
+        label .required {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            transition: all .3s ease;
+            background: #fafafa;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 0;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, .1);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 18px;
+            padding-right: 35px;
+        }
+
+        .price-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .calc-icon-btn {
+            background: #f39c12;
+            color: #fff;
+            border: 0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all .2s;
+            flex-shrink: 0;
+        }
+
+        .calc-icon-btn:hover {
+            background: #e67e22;
+            transform: scale(1.05);
+        }
+
+        .info-text {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .info-text::before {
+            content: 'ℹ';
+            background: #3498db;
+            color: #fff;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .warning-text,
+        .success-text {
+            font-size: 12px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-left: 3px solid;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .warning-text {
+            color: var(--danger);
+            background: #ffe5e5;
+            border-color: var(--danger);
+        }
+
+        .success-text {
+            color: var(--success);
+            background: #e8f8f5;
+            border-color: var(--success);
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--light), transparent);
+            margin: 20px 0;
+        }
+
+        #inventoryTable {
+            background: #f9f9f9;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #inventoryTable input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        #inventoryTable input[type="number"] {
+            border: 1px solid var(--border) !important;
+            background: #fff !important;
+        }
+
+        #inventoryTable input[type="number"]:disabled {
+            background: var(--light) !important;
+            color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        #inventoryTable input[type="number"]:not(:disabled) {
+            border-color: var(--primary) !important;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            border: 0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, .3);
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        button[type="submit"]:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, .4);
+        }
+
+        button[type="submit"]:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .6);
+            z-index: 1000;
+            animation: fadeIn .3s;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .3);
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideDown .3s;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .modal-header h3 {
+            color: var(--dark);
+            font-size: 18px;
+        }
+
+        .close-btn {
+            background: 0;
+            border: 0;
+            font-size: 24px;
+            cursor: pointer;
+            color: #95a5a6;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all .2s;
+        }
+
+        .close-btn:hover {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .calc-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+
+        .calc-row input {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .calc-row button {
+            background: var(--danger);
+            color: #fff;
+            border: 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            flex-shrink: 0;
+            align-self: flex-start;
+        }
+
+        .add-row-btn {
+            background: var(--success);
+            color: #fff;
+            border: 0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .calc-result {
+            background: #e8f8f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--success);
+        }
+
+        .calc-result h4 {
+            color: var(--success);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .calc-result p {
+            color: var(--dark);
+            font-size: 13px;
+            margin: 4px 0;
+        }
+
+        .use-price-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            border: 0;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .loading::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin .6s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @media(max-width:768px) {
+            body {
+                padding: 10px;
+                font-size: 13px
+            }
+
+            .form-container {
+                padding: 16px;
+                border-radius: 16px;
+                max-width: 100%
+            }
+
+            .form-header {
+                margin-bottom: 20px;
+                padding-bottom: 12px
+            }
+
+            .form-header h2 {
+                font-size: 20px
+            }
+
+            .form-header p {
+                font-size: 11px
+            }
+
+            .form-row {
+                margin-bottom: 14px
+            }
+
+            label {
+                font-size: 14px;
+                margin-bottom: 8px;
+                font-weight: 600
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            select {
+                padding: 12px 14px;
+                font-size: 16px;
+                border-radius: 10px
+            }
+
+            .section-title {
+                font-size: 15px;
+                margin-bottom: 14px
+            }
+
+            .info-text {
+                font-size: 12px;
+                margin-top: 6px
+            }
+
+            .warning-text,
+            .success-text {
+                font-size: 13px;
+                padding: 10px 12px;
+                margin-top: 10px;
+                border-radius: 6px
+            }
+
+            .price-input-group {
+                flex-direction: column;
+                gap: 8px
+            }
+
+            .calc-icon-btn {
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 18px
+            }
+
+            .divider {
+                margin: 16px 0
+            }
+
+            #inventoryTable {
+                border-radius: 10px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch
+            }
+
+            #inventoryTable table {
+                width: 100%;
+                min-width: 280px
+            }
+
+            #inventoryTable thead {
+                background: var(--primary);
+                color: #fff
+            }
+
+            #inventoryTable th {
+                padding: 12px !important;
+                font-size: 13px !important;
+                font-weight: 600;
+                text-align: left;
+                color: #fff
+            }
+
+            #inventoryTable td {
+                padding: 12px !important;
+                font-size: 13px;
+                border-bottom: 1px solid var(--light)
+            }
+
+            #inventoryTable tr:last-child td {
+                border-bottom: 0
+            }
+
+            #inventoryTable input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                min-width: 20px
+            }
+
+            #inventoryTable input[type="number"] {
+                width: 65px !important;
+                padding: 8px !important;
+                font-size: 14px
+            }
+
+            button[type="submit"] {
+                padding: 16px;
+                font-size: 15px;
+                border-radius: 10px;
+                margin-top: 20px;
+                min-height: 48px
+            }
+
+            .modal-content {
+                max-width: 95vw;
+                margin: 20px auto;
+                padding: 20px;
+                border-radius: 16px
+            }
+
+            .modal-header h3 {
+                font-size: 17px
+            }
+
+            .close-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 28px
+            }
+
+            .calc-row {
+                flex-direction: column;
+                gap: 10px
+            }
+
+            .calc-row input {
+                padding: 12px;
+                font-size: 16px
+            }
+
+            .calc-row button {
+                padding: 12px;
+                font-size: 15px;
+                width: 100%
+            }
+
+            .add-row-btn,
+            .use-price-btn {
+                padding: 14px;
+                font-size: 15px;
+                min-height: 48px
+            }
+
+            .calc-result {
+                padding: 16px;
+                margin-top: 16px
+            }
+
+            .calc-result h4 {
+                font-size: 15px
+            }
+
+            .calc-result p {
+                font-size: 14px;
+                margin: 6px 0
+            }
+        }
+
+        @media(max-width:480px) {
+            body {
+                padding: 8px;
+                font-size: 14px
+            }
+
+            .form-container {
+                padding: 14px;
+                border-radius: 14px
+            }
+
+            .form-header {
+                margin-bottom: 18px
+            }
+
+            .form-header h2 {
+                font-size: 18px;
+                margin-bottom: 4px
+            }
+
+            .form-row {
+                margin-bottom: 12px
+            }
+
+            label {
+                font-size: 13px;
+                margin-bottom: 6px
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            select {
+                padding: 11px 12px;
+                font-size: 15px;
+                border-radius: 8px
+            }
+
+            .section-title {
+                font-size: 14px;
+                margin-bottom: 12px
+            }
+
+            .section-title::before {
+                width: 3px;
+                height: 14px
+            }
+
+            .info-text {
+                font-size: 11px;
+                margin-top: 5px
+            }
+
+            .info-text::before {
+                width: 14px;
+                height: 14px;
+                font-size: 9px
+            }
+
+            .warning-text,
+            .success-text {
+                font-size: 12px;
+                padding: 8px 10px;
+                margin-top: 8px;
+                border-left-width: 3px
+            }
+
+            .modal-content {
+                max-width: 100vw;
+                margin: 10px 0;
+                padding: 16px;
+                border-radius: 12px
+            }
+
+            .modal-header h3 {
+                font-size: 16px
+            }
+
+            button[type="submit"],
+            .calc-row button,
+            .add-row-btn,
+            .use-price-btn {
+                min-height: 44px
+            }
+
+            #inventoryTable th,
+            #inventoryTable td {
+                padding: 10px 8px !important;
+                font-size: 12px
+            }
+
+            #inventoryTable input[type="number"] {
+                width: 55px !important;
+                padding: 6px !important;
+                font-size: 13px
+            }
+        }
+
+        @media(max-height:600px) and (orientation:landscape) {
+            .form-header {
+                margin-bottom: 12px;
+                padding-bottom: 8px
+            }
+
+            .form-header h2 {
+                font-size: 18px;
+                margin-bottom: 2px
+            }
+
+            .form-row {
+                margin-bottom: 10px
+            }
+
+            label {
+                margin-bottom: 4px
+            }
+
+            .divider {
+                margin: 12px 0
+            }
+
+            button[type="submit"] {
+                margin-top: 12px;
+                padding: 12px
+            }
+        }
+
+        @media(hover:none) and (pointer:coarse) {
+
+            button,
+            input[type="submit"],
+            .calc-icon-btn,
+            .close-btn,
+            .add-row-btn,
+            .use-price-btn {
+                min-height: 44px;
+                min-width: 44px
+            }
+
+            input[type="checkbox"] {
+                min-width: 24px;
+                min-height: 24px
+            }
+
+            select {
+                padding: 12px 14px;
+                font-size: 16px
+            }
+        }
+
+        @media(min-width:769px) and (max-width:1024px) {
+            .form-container {
+                max-width: 500px;
+                margin: 0 auto
+            }
+
+            .modal-content {
+                max-width: 550px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Dashboard Button (New Feature) -->
+    <div style="position:fixed; top:15px; right:15px; z-index:100;">
+        <button onclick="openDashboard()"
+            style="padding:8px 15px; background:var(--secondary); color:#fff; border:none; border-radius:6px; cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.1);">📊
+            View Dashboard</button>
+    </div>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>📊 Hedge Position Entry</h2>
+            <p>MCX Hedging & PnL Management</p>
+        </div>
+        <form id="hedgeForm">
+            <!-- Trade Details Section -->
+            <div class="form-section">
+                <div class="section-title">📅 Trade Details</div>
+                <div class="form-row">
+                    <label>Date <span class="required">*</span></label>
+                    <input type="date" name="date">
+                </div>
+                <div class="form-row">
+                    <label>Commodity <span class="required">*</span></label>
+                    <select name="commodity" id="commodity">
+                        <option value="">Select commodity...</option>
+                        <option value="Al">Al (Aluminium)</option>
+                        <option value="Cu">Cu (Copper)</option>
+                        <option value="Zn">Zn (Zinc)</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Product Type <span class="required">*</span></label>
+                    <select name="productType" id="productType">
+                        <option value="">Select product type...</option>
+                        <option value="IE07">IE07</option>
+                        <option value="SE07">SE07</option>
+                        <option value="Billets">Billets</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Contract Month <span class="required">*</span></label>
+                    <select name="contract" id="contract">
+                        <option value="">Select contract month...</option>
+                        <option value="Jan">January</option>
+                        <option value="Feb">February</option>
+                        <option value="Mar">March</option>
+                        <option value="Apr">April</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June</option>
+                        <option value="Jul">July</option>
+                        <option value="Aug">August</option>
+                        <option value="Sep">September</option>
+                        <option value="Oct">October</option>
+                        <option value="Nov">November</option>
+                        <option value="Dec">December</option>
+                    </select>
+                </div>
+                <div class="form-row" id="nextContractRow" style="display:none;">
+                    <label>Next Contract Month <span class="required">*</span></label>
+                    <select name="nextContract" id="nextContract">
+                        <option value="">Select next contract month...</option>
+                        <option value="Jan">January</option>
+                        <option value="Feb">February</option>
+                        <option value="Mar">March</option>
+                        <option value="Apr">April</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June</option>
+                        <option value="Jul">July</option>
+                        <option value="Aug">August</option>
+                        <option value="Sep">September</option>
+                        <option value="Oct">October</option>
+                        <option value="Nov">November</option>
+                        <option value="Dec">December</option>
+                    </select>
+                    <div class="info-text">Position will shift from current to next contract</div>
+                </div>
+                <div class="form-row">
+                    <label>Lots <span class="required">*</span></label>
+                    <input type="number" name="lots" id="lotsInput" step="1" min="1" placeholder="Enter lot quantity">
+                </div>
+                <div class="form-row">
+                    <label>Transaction Type <span class="required">*</span></label>
+                    <select name="reason" id="reason">
+                        <option value="">Select transaction type...</option>
+                        <option value="Sell">🔴 Sell (Open Position)</option>
+                        <option value="Buy">🟢 Buy (Close Position)</option>
+                        <option value="Rollover">🔄 Rollover</option>
+                    </select>
+                    <div id="validationMsg"></div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <!-- Trader & Price Section -->
+            <div class="form-section">
+                <div class="section-title">👤 Trader & Pricing</div>
+                <div class="form-row">
+                    <label>Trader Name <span class="required">*</span></label>
+                    <select name="trader">
+                        <option value="">Select trader...</option>
+                        <option value="Rakesh Bhai">Rakesh Bhai</option>
+                        <option value="Shubham">Shubham</option>
+                    </select>
+                </div>
+                <div class="form-row" id="avgPriceRow">
+                    <label>Average Price <span class="required">*</span></label>
+                    <div class="price-input-group">
+                        <input type="number" name="avgPrice" id="avgPrice" step="0.01" min="0" placeholder="₹ 0.00">
+                        <button type="button" class="calc-icon-btn" onclick="openCalculator()"
+                            title="Open Price Calculator">🧮</button>
+                    </div>
+                    <div class="info-text">Use calculator for multiple trades average</div>
+                </div>
+                <div class="form-row" id="rolloverGainsRow" style="display:none;">
+                    <label>Rollover Gains/Loss <span class="required">*</span></label>
+                    <input type="number" name="rolloverGains" id="rolloverGains" step="0.01"
+                        placeholder="₹ e.g., +2 or -1.5">
+                    <div class="info-text" id="rolloverInfo"></div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <!-- Counterparty Section -->
+            <div class="form-section">
+                <div class="section-title">🤝 Counterparty Details</div>
+                <div class="form-row" id="supplierRow" style="display:none;">
+                    <label>Supplier Name <span class="required">*</span></label>
+                    <input type="text" name="supplierName" id="supplierName" placeholder="Enter supplier name">
+                    <div class="info-text">New inventory code will be auto-generated</div>
+                </div>
+                <div class="form-row" id="inventoryRow" style="display:none;">
+                    <label>Select Inventory Codes <span class="required">*</span></label>
+                    <div id="inventoryTable" style="display:none;">
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 12px;">
+                            <thead>
+                                <tr style="background: #f0f0f0; border-bottom: 2px solid #e8e8e8;">
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
+                                        Select</th>
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
+                                        Inventory Code</th>
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
+                                        Available</th>
+                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">To
+                                        Buy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody"></tbody>
+                        </table>
+                    </div>
+                    <select id="inventoryCode" style="display:none;">
+                        <option value="">First select Commodity & Contract</option>
+                    </select>
+                    <div class="info-text">Select inventory codes and specify quantity for each (Sold > Bought)</div>
+                </div>
+                <div class="form-row" id="buyerRow" style="display:none;">
+                    <label>Buyer Name</label>
+                    <input type="text" name="buyerName" placeholder="Enter buyer name (optional)">
+                </div>
+            </div>
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Submit Entry</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Calculator Modal -->
+    <div id="calcModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🧮 Average Price Calculator</h3>
+                <button type="button" class="close-btn" onclick="closeCalculator()">×</button>
+            </div>
+            <div id="calcRows">
+                <div class="calc-row">
+                    <input type="number" class="calc-lots" placeholder="Lots" min="0" step="1">
+                    <input type="number" class="calc-price" placeholder="Price ₹" min="0" step="0.01">
+                    <button type="button" onclick="removeRow(this)">×</button>
+                </div>
+            </div>
+            <button type="button" class="add-row-btn" onclick="addCalcRow()">+ Add More Trades</button>
+            <div id="calcResult" class="calc-result" style="display:none;">
+                <h4>📊 Calculation Result</h4>
+                <p><strong>Total Lots:</strong> <span id="totalLots">0</span></p>
+                <p><strong>Weighted Average:</strong> ₹<span id="avgPriceCalc">0.00</span></p>
+            </div>
+            <button type="button" class="use-price-btn" onclick="usePriceAndClose()">✅ Use This Price</button>
+        </div>
+    </div>
+
+    <!-- Form Popup Modal -->
+    <div id="formPopup" class="modal">
+        <div class="modal-content" style="max-width:400px; text-align:center;">
+            <div class="modal-header">
+                <h3>Message</h3>
+                <button type="button" class="close-btn" onclick="hidePopup()">×</button>
+            </div>
+            <div id="formPopupBody" style="padding: 10px 5px; font-size:14px;"></div>
+            <div style="margin-top:16px;">
+                <button type="button" class="use-price-btn" onclick="hidePopup()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal (New) -->
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content" style="max-width:800px; max-height:90vh;">
+            <div class="modal-header">
+                <h3>📊 Dashboard & Inventory</h3>
+                <button class="close-btn"
+                    onclick="document.getElementById('dashboardModal').style.display='none'">×</button>
+            </div>
+            <div id="dashboardContent" style="font-size:12px; overflow-x:auto;"></div>
+            <div style="margin-top:15px; text-align:right;">
+                <button onclick="document.getElementById('dashboardModal').style.display='none'" class="use-price-btn"
+                    style="width:auto; display:inline-block; margin:0;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const el = id => document.getElementById(id), qs = s => document.querySelector(s);
+        const reasonSelect = el('reason'), commodityInput = el('commodity'), contractSelect = el('contract'), nextContractRow = el('nextContractRow'), nextContractSelect = el('nextContract'), lotsInput = el('lotsInput'), supplierRow = el('supplierRow'), inventoryRow = el('inventoryRow'), buyerRow = el('buyerRow'), supplierInput = el('supplierName'), validationMsg = el('validationMsg'), submitBtn = el('submitBtn'), btnText = el('btnText'), avgPriceInput = el('avgPrice'), rolloverGainsInput = el('rolloverGains'), rolloverInfoDiv = el('rolloverInfo');
+
+        function openCalculator() { el('calcModal').style.display = 'block'; calculateAverage() }
+        function closeCalculator() { el('calcModal').style.display = 'none' }
+        function addCalcRow() { const c = el('calcRows'), d = document.createElement('div'); d.className = 'calc-row'; d.innerHTML = '<input type="number" class="calc-lots" placeholder="Lots" min="0" step="1" oninput="calculateAverage()"><input type="number" class="calc-price" placeholder="Price ₹" min="0" step="0.01" oninput="calculateAverage()"><button type="button" onclick="removeRow(this)">×</button>'; c.appendChild(d) }
+        function removeRow(btn) { if (document.querySelectorAll('.calc-row').length > 1) { btn.parentElement.remove(); calculateAverage() } }
+        function calculateAverage() { let total = 0, sum = 0; document.querySelectorAll('.calc-row').forEach(row => { const lots = parseFloat(row.querySelector('.calc-lots').value) || 0, price = parseFloat(row.querySelector('.calc-price').value) || 0; total += lots; sum += lots * price }); const avg = total > 0 ? (sum / total).toFixed(2) : 0; el('totalLots').textContent = total; el('avgPriceCalc').textContent = avg; el('calcResult').style.display = total > 0 ? 'block' : 'none' }
+        function usePriceAndClose() { const price = el('avgPriceCalc').textContent; if (parseFloat(price) > 0) { avgPriceInput.value = price; closeCalculator() } else alert('Please enter valid lots and prices') }
+        function showPopup(message, type) { const popup = el('formPopup'), title = el('formPopupTitle'); el('formPopupBody').innerHTML = message; title.textContent = type === 'success' ? 'Success' : 'Attention'; popup.style.display = 'block'; if (type === 'success') setTimeout(hidePopup, 2000) }
+        function hidePopup() { el('formPopup').style.display = 'none' }
+        function updateNextContractOptions() {
+            if (reasonSelect.value !== 'Rollover') return; const curr = contractSelect.value, months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; nextContractSelect.innerHTML = '<option value="">Select next contract month...</option>'; if (!curr) { months.forEach(m => { const opt = document.createElement('option'); opt.value = m; opt.textContent = m; nextContractSelect.appendChild(opt) }); return }
+            const idx = months.indexOf(curr); for (let i = 1; i < months.length; i++) { const nextIdx = (idx + i) % months.length, month = months[nextIdx], opt = document.createElement('option'); opt.value = month; opt.textContent = month; nextContractSelect.appendChild(opt) }
+        }
+        function updateReasonFields() {
+            const val = reasonSelect.value; validationMsg.innerHTML = ''; avgPriceInput.value = ''; rolloverGainsInput.value = ''; const avgPriceRow = el('avgPriceRow'), rolloverGainsRow = el('rolloverGainsRow'); if (val === 'Sell') { supplierRow.style.display = 'block'; inventoryRow.style.display = 'none'; buyerRow.style.display = 'none'; nextContractRow.style.display = 'none'; avgPriceRow.style.display = 'block'; rolloverGainsRow.style.display = 'none'; supplierInput.required = true; avgPriceInput.required = true; nextContractSelect.required = false; submitBtn.disabled = true; validationMsg.innerHTML = '<div class="warning-text">⚠️ Please fill Supplier Name and Average Price</div>' } else if (val === 'Buy') { supplierRow.style.display = 'none'; inventoryRow.style.display = 'block'; buyerRow.style.display = 'block'; nextContractRow.style.display = 'none'; avgPriceRow.style.display = 'block'; rolloverGainsRow.style.display = 'none'; supplierInput.required = false; avgPriceInput.required = true; nextContractSelect.required = false; if (commodityInput.value && contractSelect.value) { validateAndLoadInventories() } else { validationMsg.innerHTML = '<div class="warning-text">⚠️ Please select Commodity & Contract first</div>'; submitBtn.disabled = true } } else if (val === 'Rollover') { supplierRow.style.display = 'none'; inventoryRow.style.display = 'block'; buyerRow.style.display = 'block'; nextContractRow.style.display = 'block'; avgPriceRow.style.display = 'none'; rolloverGainsRow.style.display = 'block'; supplierInput.required = false; avgPriceInput.required = false; nextContractSelect.required = true; el('rolloverGains').required = true; updateNextContractOptions(); if (commodityInput.value && contractSelect.value) { validateAndLoadInventories() } else { validationMsg.innerHTML = '<div class="warning-text">⚠️ Please select Commodity & Contract first</div>'; submitBtn.disabled = true } } else { supplierRow.style.display = 'none'; inventoryRow.style.display = 'none'; buyerRow.style.display = 'none'; nextContractRow.style.display = 'none'; avgPriceRow.style.display = 'block'; rolloverGainsRow.style.display = 'none'; supplierInput.required = false; avgPriceInput.required = true; nextContractSelect.required = false; submitBtn.disabled = false }
+        }
+        function validateAndLoadInventories() {
+            const commodity = commodityInput.value, contract = contractSelect.value, reason = reasonSelect.value, reqLots = parseFloat(lotsInput.value) || 0;
+            if (!commodity || !contract || reason !== 'Buy' && reason !== 'Rollover') return;
+            el('inventoryTable').style.display = 'none';
+            el('inventoryTableBody').innerHTML = '<tr><td colspan="4" style="padding:10px;text-align:center;">Loading...</td></tr>';
+            submitBtn.disabled = true;
+            validationMsg.innerHTML = '';
+            google.script.run.withSuccessHandler(inventories => {
+                if (inventories.length === 0) {
+                    el('inventoryTableBody').innerHTML = '<tr><td colspan="4" style="padding:10px;text-align:center;">No open SELL positions</td></tr>';
+                    el('inventoryTable').style.display = 'none';
+                    validationMsg.innerHTML = '<div class="warning-text">❌ No SELL position found for ' + commodity + ' ' + contract + '. Cannot ' + reason + ' without SELL position first.</div>';
+                    submitBtn.disabled = true;
+                } else {
+                    const total = inventories.reduce((s, inv) => s + inv.openLots, 0);
+                    let html = '';
+                    inventories.forEach(inv => {
+                        html += '<tr style="border-bottom:1px solid #e8e8e8;"><td style="padding:8px;"><input type="checkbox" class="inv-checkbox" data-code="' + inv.code + '" data-available="' + inv.openLots + '" style="cursor:pointer;"></td><td style="padding:8px;font-size:12px;font-weight:500;">' + inv.code + '</td><td style="padding:8px;font-size:12px;">' + inv.openLots + ' lots</td><td style="padding:8px;"><input type="number" class="inv-qty" data-code="' + inv.code + '" min="0" max="' + inv.openLots + '" step="1" placeholder="0" style="width:60px;padding:5px;border:1px solid #e8e8e8;border-radius:4px;font-size:12px;" disabled></td></tr>';
+                    });
+                    el('inventoryTableBody').innerHTML = html;
+                    el('inventoryTable').style.display = 'block';
+                    document.querySelectorAll('.inv-checkbox').forEach(cb => {
+                        cb.addEventListener('change', function () {
+                            const selector = '.inv-qty[data-code="' + this.dataset.code + '"]';
+                            const qty = qs(selector);
+                            if (this.checked) { qty.disabled = false; qty.focus() } else { qty.disabled = true; qty.value = '' }
+                            updateInventoryValidation();
+                        });
+                    });
+                    document.querySelectorAll('.inv-qty').forEach(inp => { inp.addEventListener('input', updateInventoryValidation) });
+                    if (reqLots > total) {
+                        validationMsg.innerHTML = '<div class="warning-text">❌ Cannot ' + reason + ' ' + reqLots + ' lots. Only ' + total + ' open lots available.</div>';
+                        submitBtn.disabled = true;
+                    } else {
+                        validationMsg.innerHTML = '<div class="success-text">✅ ' + inventories.length + ' open position(s) | Total available: ' + total + ' lots</div>';
+                        if (reason === 'Buy') { const p = parseFloat(avgPriceInput.value); submitBtn.disabled = avgPriceInput.value === '' || isNaN(p) || p <= 0 }
+                        else if (reason === 'Rollover') { submitBtn.disabled = true }
+                        else { submitBtn.disabled = false }
+                    }
+                }
+            }).withFailureHandler(err => {
+                el('inventoryTableBody').innerHTML = '<tr><td colspan="4" style="padding:10px;text-align:center;color:#e74c3c;">Error loading positions</td></tr>';
+                validationMsg.innerHTML = '<div class="warning-text">❌ Error loading open positions</div>';
+                submitBtn.disabled = true;
+            }).getOpenInventories(commodity, contract);
+        }
+        function updateInventoryValidation() {
+            const checked = Array.from(document.querySelectorAll('.inv-checkbox:checked'));
+            let selected = 0;
+            checked.forEach(cb => {
+                const selector = '.inv-qty[data-code="' + cb.dataset.code + '"]';
+                const inp = qs(selector);
+                selected += parseFloat(inp.value) || 0;
+            });
+            const reqLots = parseFloat(lotsInput.value) || 0, reason = reasonSelect.value;
+            if (selected !== reqLots && selected > 0) {
+                validationMsg.innerHTML = '<div class="warning-text">⚠️ Selected quantity (' + selected + ') does not match total lots (' + reqLots + ')</div>';
+                submitBtn.disabled = true;
+            } else if (selected === reqLots && selected > 0) {
+                if (reason === 'Buy') {
+                    const p = parseFloat(avgPriceInput.value);
+                    if (avgPriceInput.value === '' || isNaN(p) || p <= 0) {
+                        validationMsg.innerHTML = '<div class="warning-text">⚠️ Please enter Average Price to proceed</div>';
+                        submitBtn.disabled = true;
+                        return;
+                    }
+                }
+                if (reason === 'Rollover') {
+                    const g = parseFloat(rolloverGainsInput.value);
+                    if (rolloverGainsInput.value === '' || isNaN(g)) {
+                        validationMsg.innerHTML = '<div class="warning-text">⚠️ Please enter Rollover Gains/Loss to proceed</div>';
+                        submitBtn.disabled = true;
+                        return;
+                    }
+                }
+                validationMsg.innerHTML = '<div class="success-text">✅ Allocation complete: ' + selected + ' lots from ' + checked.length + ' position(s)</div>';
+                submitBtn.disabled = false;
+                if (reason === 'Rollover' && checked.length > 0) { updateRolloverPriceInfo() }
+            } else if (selected === 0 && reqLots > 0) {
+                validationMsg.innerHTML = '<div class="warning-text">⚠️ Please allocate ' + reqLots + ' lots across selected inventories</div>';
+                submitBtn.disabled = true;
+            } else {
+                submitBtn.disabled = false;
+            }
+        }
+        function updateRolloverPriceInfo() {
+            const codes = Array.from(document.querySelectorAll('.inv-checkbox:checked')).map(cb => cb.dataset.code);
+            google.script.run.withSuccessHandler(data => {
+                let text = 'Inventory Prices: ';
+                const map = {};
+                data.forEach(inv => {
+                    map[inv.code] = inv.avgPrice;
+                    text += inv.code + ': ₹' + inv.avgPrice + ' | ';
+                });
+                window.inventoryPriceMap = map;
+                const gains = parseFloat(rolloverGainsInput.value) || 0;
+                if (gains !== 0) {
+                    text += '<br/>With Rollover Gains: +₹' + Math.abs(gains).toFixed(2);
+                }
+                rolloverInfoDiv.innerHTML = text;
+            }).withFailureHandler(err => {
+                rolloverInfoDiv.innerHTML = '⚠️ Could not load inventory prices';
+            }).getInventoryPrices(codes);
+        }
+        const updateSellValidation = () => { const sup = supplierInput.value.trim(), price = parseFloat(avgPriceInput.value); if (sup && !isNaN(price) && price > 0) { validationMsg.innerHTML = '<div class="success-text">✅ Ready to submit Sell transaction</div>'; submitBtn.disabled = false } else { submitBtn.disabled = true; validationMsg.innerHTML = !sup ? '<div class="warning-text">⚠️ Please fill Supplier Name</div>' : '<div class="warning-text">⚠️ Please fill Average Price</div>' } };
+        rolloverGainsInput.addEventListener('input', () => { if (reasonSelect.value === 'Rollover') { updateRolloverPriceInfo() } });
+        avgPriceInput.addEventListener('input', () => { if (reasonSelect.value === 'Buy') { updateInventoryValidation() } else if (reasonSelect.value === 'Sell') { updateSellValidation() } });
+        supplierInput.addEventListener('input', () => { if (reasonSelect.value === 'Sell') { updateSellValidation() } });
+        commodityInput.addEventListener('blur', validateAndLoadInventories);
+        contractSelect.addEventListener('change', () => { validateAndLoadInventories(); if (reasonSelect.value === 'Rollover') { updateNextContractOptions() } });
+        nextContractSelect.addEventListener('change', () => { if (reasonSelect.value === 'Rollover') { updateInventoryValidation() } });
+        lotsInput.addEventListener('input', validateAndLoadInventories);
+        reasonSelect.addEventListener('change', updateReasonFields);
+        window.onclick = function (e) { if (e.target === el('calcModal')) { closeCalculator() } };
+        el('hedgeForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            validationMsg.innerHTML = '';
+            const formData = new FormData(this), obj = {};
+            formData.forEach((val, key) => obj[key] = val);
+            const missing = [];
+            if (!obj.date) missing.push('Date');
+            if (!obj.commodity) missing.push('Commodity');
+            if (!obj.productType) missing.push('Product Type');
+            if (!obj.contract) missing.push('Contract Month');
+            if (!obj.lots) missing.push('Lots');
+            if (!obj.reason) missing.push('Transaction Type');
+            if (!obj.trader) missing.push('Trader');
+            if (missing.length > 0) {
+                let msg = 'Please fill the following required field(s):<br><br>' + missing.map(f => '• ' + f).join('<br>');
+                showPopup(msg, 'warning');
+                return;
+            }
+            const checked = Array.from(document.querySelectorAll('.inv-checkbox:checked'));
+            if ((obj.reason === 'Buy' || obj.reason === 'Rollover') && checked.length === 0) {
+                validationMsg.innerHTML = '❌ Please select at least one inventory code';
+                validationMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            if (checked.length > 0) {
+                obj.selectedInventories = checked.map(cb => {
+                    let price = parseFloat(obj.avgPrice) || 0;
+                    if (obj.reason === 'Rollover' && window.inventoryPriceMap) {
+                        const old = window.inventoryPriceMap[cb.dataset.code] || 0, gains = parseFloat(obj.rolloverGains) || 0;
+                        price = old + gains;
+                    }
+                    const selector = '.inv-qty[data-code="' + cb.dataset.code + '"]';
+                    return { code: cb.dataset.code, quantity: parseFloat(qs(selector).value) || 0, avgPrice: price };
+                });
+                const total = obj.selectedInventories.reduce((s, inv) => s + inv.quantity, 0);
+                if (total !== parseFloat(obj.lots)) {
+                    validationMsg.innerHTML = '❌ Total allocated quantity (' + total + ') must equal total lots (' + obj.lots + ')';
+                    validationMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+            }
+            if (obj.reason === 'Buy') {
+                const p = parseFloat(obj.avgPrice);
+                if (!obj.avgPrice || isNaN(p) || p <= 0) {
+                    validationMsg.innerHTML = '❌ Please enter a valid Average Price for Buy transaction';
+                    validationMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+            }
+            if (obj.reason === 'Rollover') {
+                if (!obj.nextContract) {
+                    validationMsg.innerHTML = '❌ Please select Next Contract Month for Rollover transaction';
+                    validationMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                const g = parseFloat(obj.rolloverGains);
+                if (!obj.rolloverGains || isNaN(g)) {
+                    validationMsg.innerHTML = '❌ Please enter Rollover Gains/Loss value';
+                    validationMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+            }
+            if (obj.reason === 'Sell') {
+                if (!obj.supplierName) {
+                    validationMsg.innerHTML = '❌ Please enter Supplier Name for Sell transaction';
+                    validationMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                const p = parseFloat(obj.avgPrice);
+                if (!obj.avgPrice || isNaN(p) || p <= 0) {
+                    validationMsg.innerHTML = '❌ Please enter a valid Average Price for Sell transaction';
+                    validationMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+            }
+            if (obj.reason === 'Rollover') { obj.contractToSave = obj.nextContract }
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            btnText.textContent = 'Submitting...';
+            google.script.run.withSuccessHandler(() => {
+                showPopup('✅ Entry saved successfully!', 'success');
+                this.reset();
+                updateReasonFields();
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.textContent = 'Submit Entry';
+                window.inventoryPriceMap = null;
+            }).withFailureHandler(err => {
+                showPopup('❌ Error: ' + err, 'warning');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.textContent = 'Submit Entry';
+            }).submitHedgeForm(obj);
+        });
+
+        // Expose globals for HTML Event Handlers
+        window.openCalculator = openCalculator;
+        window.closeCalculator = closeCalculator;
+        window.addCalcRow = addCalcRow;
+        window.removeRow = removeRow;
+        window.calculateAverage = calculateAverage;
+        window.usePriceAndClose = usePriceAndClose;
+        window.hidePopup = hidePopup;
+        window.renderDashboard = renderDashboard;
+
+        function openDashboard() {
+            document.getElementById('dashboardContent').innerHTML = '<div style="padding:20px; text-align:center;">Loading dashboard data...</div>';
+            document.getElementById('dashboardModal').style.display = 'block';
+
+            google.script.run.withSuccessHandler(function (data) {
+                const html = renderDashboard(data);
+                document.getElementById('dashboardContent').innerHTML = html;
+            }).withFailureHandler(function (err) {
+                document.getElementById('dashboardContent').innerHTML = '<div style="color:red; padding:20px;">Error loading data: ' + err + '</div>';
+            }).getEntries();
+        }
+    </script>
+
+</body>
+
+</html>
