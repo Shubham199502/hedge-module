@@ -17,7 +17,11 @@ const GAS_API_URL = IS_LOCALHOST
 // API Helper - Using GET for ALL operations (GAS CORS workaround)
 // GAS Web Apps redirect, which causes CORS issues with POST. GET works reliably.
 async function apiCall(action, data = {}) {
-    const url = new URL(GAS_API_URL);
+    // In production, GAS_API_URL is '/api/proxy' (relative), needs base URL
+    // In development, GAS_API_URL is full URL with CORS proxy
+    const url = IS_LOCALHOST
+        ? new URL(GAS_API_URL)
+        : new URL(GAS_API_URL, window.location.origin);
     url.searchParams.append('action', action);
 
     // For read operations, pass params directly
