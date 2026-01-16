@@ -24,21 +24,25 @@
 /* Light Mode */
 body.light-mode {
   --dark: #f5f7fa;
-  --form-bg: #ffffff;
-  --form-border: #e8e8e8;
-  --input-bg: #fafafa;
-  --input-border: #e8e8e8;
+  --form-bg: rgba(255, 255, 255, 0.4);
+  --form-border: rgba(255, 255, 255, 0.5);
+  --input-bg: rgba(255, 255, 255, 0.6);
+  --input-border: rgba(255, 255, 255, 0.8);
   --label-color: #2c3e50;
   --text-primary: #2c3e50;
-  --text-muted: #7f8c8d;
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(0, 0, 0, 0.1);
+  --text-muted: #5a6c7d;
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.4);
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
 }
 
 /* Light Mode - Dashboard Table Text Fix */
 body.light-mode .modal-content {
   color: #2c3e50;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 body.light-mode .dashboard-modal tr {
@@ -51,13 +55,25 @@ body.light-mode .dashboard-modal td {
 
 body.light-mode .widget-label,
 body.light-mode .widget-subtext {
-  color: #7f8c8d;
+  color: #5a6c7d;
+}
+
+body.light-mode .widget-card {
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 body.light-mode .widget-container {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   padding: 16px;
+}
+
+body.light-mode .form-container {
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 * {
