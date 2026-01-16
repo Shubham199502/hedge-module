@@ -152,6 +152,68 @@ body {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Dashboard Button - Responsive Floating */
+.dashboard-btn {
+  position: fixed;
+  top: 15px;
+  right: 80px;
+  z-index: 100;
+  padding: 10px 18px;
+  background: var(--secondary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.dashboard-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
+}
+
+.dashboard-btn .btn-icon {
+  font-size: 18px;
+}
+
+/* Mobile: Floating Action Button at bottom */
+@media (max-width: 600px) {
+  .dashboard-btn {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    padding: 14px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    justify-content: center;
+  }
+
+  .dashboard-btn .btn-text {
+    display: none;
+  }
+
+  .dashboard-btn .btn-icon {
+    font-size: 24px;
+  }
+
+  .theme-toggle {
+    top: auto;
+    bottom: 20px;
+    left: 20px;
+    right: auto;
+    width: 48px;
+    height: 48px;
+  }
+}
+
 .form-container {
   background: var(--form-bg);
   backdrop-filter: blur(16px);

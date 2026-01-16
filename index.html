@@ -15,12 +15,11 @@
     <!-- Theme Toggle Button -->
     <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">🌙</button>
 
-    <!-- Dashboard Button -->
-    <div style="position:fixed; top:15px; right:80px; z-index:100;">
-        <button onclick="openDashboard()"
-            style="padding:8px 15px; background:var(--secondary); color:#fff; border:none; border-radius:6px; cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.1);">📊
-            View Dashboard</button>
-    </div>
+    <!-- Dashboard Button (Floating on Mobile) -->
+    <button id="dashboardBtn" class="dashboard-btn" onclick="openDashboard()">
+        <span class="btn-icon">📊</span>
+        <span class="btn-text">View Dashboard</span>
+    </button>
 
     <div class="form-container">
         <div class="form-header">
