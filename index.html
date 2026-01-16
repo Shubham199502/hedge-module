@@ -143,18 +143,14 @@
                 </div>
                 <div class="form-row" id="inventoryRow" style="display:none;">
                     <label>Select Inventory Codes <span class="required">*</span></label>
-                    <div id="inventoryTable" style="display:none;">
-                        <table style="width:100%; border-collapse: collapse; margin-bottom: 12px;">
+                    <div id="inventoryTable" class="inventory-selection-table" style="display:none;">
+                        <table>
                             <thead>
-                                <tr style="background: #f0f0f0; border-bottom: 2px solid #e8e8e8;">
-                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
-                                        Select</th>
-                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
-                                        Inventory Code</th>
-                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">
-                                        Available</th>
-                                    <th style="padding: 8px; text-align: left; font-weight: 600; font-size: 12px;">To
-                                        Buy</th>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Inventory Code</th>
+                                    <th>Available</th>
+                                    <th>To Buy</th>
                                 </tr>
                             </thead>
                             <tbody id="inventoryTableBody"></tbody>
