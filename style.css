@@ -128,11 +128,13 @@ body.light-mode .form-container {
 .inventory-selection-table td {
   padding: 8px;
   border-bottom: 1px solid var(--glass-border);
-  color: var(--text-primary);
+  color: #f8fafc !important;
+  font-size: 12px;
 }
 
 .inventory-selection-table tbody tr {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(30, 41, 59, 0.8);
+  color: #f8fafc !important;
 }
 
 .inventory-selection-table tbody tr:hover {
@@ -165,7 +167,12 @@ body.light-mode .inventory-selection-table tbody tr {
 
 body.light-mode .inventory-selection-table th,
 body.light-mode .inventory-selection-table td {
-  color: #2c3e50;
+  color: #2c3e50 !important;
+}
+
+body.light-mode .inventory-selection-table tbody tr {
+  background: rgba(255, 255, 255, 0.7);
+  color: #2c3e50 !important;
 }
 
 /* Inventory row cell styles */
