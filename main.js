@@ -771,7 +771,7 @@ function renderDashboard(data) {
         let statusIcon = open === 0 ? '✅' : (open > 0 ? '⚠️' : '❌');
         let statusText = open === 0 ? 'Perfect Hedge (Closed)' : (open > 0 ? `Open Short (${open} lots)` : `Over-hedged (${Math.abs(open)} lots)`);
 
-        html += `<tr style="text-align:center; background:rgba(255,255,255,0.03); color:#f8fafc;">
+        html += `<tr style="text-align:center; background:rgba(39,174,96,0.15); color:#f8fafc;">
             <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.commodity}</td>
             <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.product}</td>
             <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.contract}</td>
@@ -808,7 +808,7 @@ function renderDashboard(data) {
         let statusTextColor = open === 0 ? '#27ae60' : (open > 0 ? '#e67e22' : '#c0392b');
         let statusMsg = open === 0 ? '✅ Closed' : (open > 0 ? `⚠️ Open (${open} lots)` : `❌ Over (${Math.abs(open)} lots)`);
 
-        html += `<tr style="text-align:center; background:rgba(255,255,255,0.03); color:#f8fafc;">
+        html += `<tr style="text-align:center; background:rgba(118,75,162,0.15); color:#f8fafc;">
             <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.commodity}</td>
             <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.product}</td>
             <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.contract}</td>
