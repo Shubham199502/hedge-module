@@ -771,15 +771,15 @@ function renderDashboard(data) {
         let statusIcon = open === 0 ? '✅' : (open > 0 ? '⚠️' : '❌');
         let statusText = open === 0 ? 'Perfect Hedge (Closed)' : (open > 0 ? `Open Short (${open} lots)` : `Over-hedged (${Math.abs(open)} lots)`);
 
-        html += `<tr style="text-align:center; background:#f9f9f9;">
-            <td style="padding:8px; border:1px solid #ddd;">${s.commodity}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${s.product}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${s.contract}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${s.sold}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${s.bought}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${open}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${net}</td>
-            <td style="padding:8px; border:1px solid #ddd; text-align:left;">${statusIcon} ${statusText}</td>
+        html += `<tr style="text-align:center; background:rgba(255,255,255,0.03); color:#f8fafc;">
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.commodity}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.product}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.contract}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.sold}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${s.bought}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${open}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${net}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); text-align:left;">${statusIcon} ${statusText}</td>
         </tr>`;
     });
     html += '</tbody></table></div>';
@@ -808,17 +808,17 @@ function renderDashboard(data) {
         let statusTextColor = open === 0 ? '#27ae60' : (open > 0 ? '#e67e22' : '#c0392b');
         let statusMsg = open === 0 ? '✅ Closed' : (open > 0 ? `⚠️ Open (${open} lots)` : `❌ Over (${Math.abs(open)} lots)`);
 
-        html += `<tr style="text-align:center; background:#f9f9f9;">
-            <td style="padding:8px; border:1px solid #ddd;">${inv.commodity}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${inv.product}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${inv.contract}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${inv.code}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${inv.supplier}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${inv.sold}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${inv.bought}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${open}</td>
-            <td style="padding:8px; border:1px solid #ddd;">${inv.avgPrice.toFixed(2)}</td>
-            <td style="padding:8px; border:1px solid #ddd; background:${statusColor}; color:${statusTextColor}; font-weight:bold;">${statusMsg}</td>
+        html += `<tr style="text-align:center; background:rgba(255,255,255,0.03); color:#f8fafc;">
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.commodity}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.product}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.contract}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.code}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.supplier}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.sold}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.bought}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${open}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${inv.avgPrice.toFixed(2)}</td>
+            <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); background:${statusColor}; color:${statusTextColor}; font-weight:bold;">${statusMsg}</td>
         </tr>`;
     });
     html += '</tbody></table></div>';
@@ -855,13 +855,13 @@ function renderDashboard(data) {
 
             // Transaction rows
             txs.forEach(tx => {
-                html += `<tr style="background:#d6eaf8; border:1px solid #ddd;">
-                    <td style="padding:8px; border:1px solid #bdc3c7;">${tx.code}</td>
-                    <td style="padding:8px; border:1px solid #bdc3c7; text-align:center;">${tx.lots}</td>
-                    <td style="padding:8px; border:1px solid #bdc3c7;">${tx.buyer}</td>
-                    <td style="padding:8px; border:1px solid #bdc3c7;">${tx.supplier}</td>
-                    <td style="padding:8px; border:1px solid #bdc3c7; text-align:center;">${tx.avgPrice.toFixed(2)}</td>
-                    <td style="padding:8px; border:1px solid #bdc3c7; text-align:center;">${tx.date}</td>
+                html += `<tr style="background:rgba(52,152,219,0.15); color:#f8fafc; border:1px solid rgba(255,255,255,0.1);">
+                    <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${tx.code}</td>
+                    <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); text-align:center;">${tx.lots}</td>
+                    <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${tx.buyer}</td>
+                    <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${tx.supplier}</td>
+                    <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); text-align:center;">${tx.avgPrice.toFixed(2)}</td>
+                    <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); text-align:center;">${tx.date}</td>
                 </tr>`;
             });
 
