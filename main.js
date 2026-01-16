@@ -2,6 +2,41 @@
 // HEDGE MODULE - Frontend (Fetch API Version)
 // ============================================
 
+// ═══════════════════════════════════════════════════════════════════════
+// THEME TOGGLE (Light/Dark Mode)
+// ═══════════════════════════════════════════════════════════════════════
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const toggleBtn = document.getElementById('themeToggle');
+
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        if (toggleBtn) toggleBtn.textContent = '☀️';
+    } else {
+        document.body.classList.remove('light-mode');
+        if (toggleBtn) toggleBtn.textContent = '🌙';
+    }
+}
+
+function toggleTheme() {
+    const toggleBtn = document.getElementById('themeToggle');
+    const isLight = document.body.classList.toggle('light-mode');
+
+    if (isLight) {
+        localStorage.setItem('theme', 'light');
+        if (toggleBtn) toggleBtn.textContent = '☀️';
+    } else {
+        localStorage.setItem('theme', 'dark');
+        if (toggleBtn) toggleBtn.textContent = '🌙';
+    }
+}
+
+// Initialize theme on page load
+document.addEventListener('DOMContentLoaded', initTheme);
+
+// Expose to window
+window.toggleTheme = toggleTheme;
+
 // 🔴 Google Apps Script Web App URL (used directly by Vercel API proxy)
 const GAS_API_URL_RAW = 'https://script.google.com/macros/s/AKfycbwdm7GvLT81vvsWuhMQNWuZfYRT1S45-hju1YEpVKxcH-Qnzm91KJOtigBL-nV1JiTvTQ/exec';
 
