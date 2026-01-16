@@ -36,6 +36,30 @@ body.light-mode {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
 }
 
+/* Light Mode - Dashboard Table Text Fix */
+body.light-mode .modal-content {
+  color: #2c3e50;
+}
+
+body.light-mode .dashboard-modal tr {
+  color: #2c3e50 !important;
+}
+
+body.light-mode .dashboard-modal td {
+  color: #2c3e50 !important;
+}
+
+body.light-mode .widget-label,
+body.light-mode .widget-subtext {
+  color: #7f8c8d;
+}
+
+body.light-mode .widget-container {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+}
+
 * {
   margin: 0;
   padding: 0;
