@@ -301,7 +301,12 @@ async function validateAndLoadInventories() {
             const total = inventories.reduce((s, inv) => s + inv.openLots, 0);
             let html = '';
             inventories.forEach(inv => {
-                html += '<tr style="border-bottom:1px solid #e8e8e8;"><td style="padding:8px;"><input type="checkbox" class="inv-checkbox" data-code="' + inv.code + '" data-available="' + inv.openLots + '" style="cursor:pointer;"></td><td style="padding:8px;font-size:12px;font-weight:500;">' + inv.code + '</td><td style="padding:8px;font-size:12px;">' + inv.openLots + ' lots</td><td style="padding:8px;"><input type="number" class="inv-qty" data-code="' + inv.code + '" min="0" max="' + inv.openLots + '" step="1" placeholder="0" style="width:60px;padding:5px;border:1px solid #e8e8e8;border-radius:4px;font-size:12px;" disabled></td></tr>';
+                html += `<tr>
+                    <td><input type="checkbox" class="inv-checkbox" data-code="${inv.code}" data-available="${inv.openLots}"></td>
+                    <td class="inv-code">${inv.code}</td>
+                    <td class="inv-available">${inv.openLots} lots</td>
+                    <td><input type="number" class="inv-qty" data-code="${inv.code}" min="0" max="${inv.openLots}" step="1" placeholder="0" disabled></td>
+                </tr>`;
             });
             el('inventoryTableBody').innerHTML = html;
             el('inventoryTable').style.display = 'block';
