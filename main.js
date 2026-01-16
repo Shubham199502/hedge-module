@@ -698,29 +698,27 @@ function renderDashboard(data) {
     let html = '';
 
     // ═══════════════════════════════════════════════════════════════════════
-    // WIDGETS SECTION: Dropdowns + 3 Widget Cards
+    // WIDGETS SECTION: Dropdowns + 3 Widget Cards (Glassmorphism)
     // ═══════════════════════════════════════════════════════════════════════
 
     // Get unique commodities and contracts for dropdowns
     const commodities = [...new Set(rows.map(r => r[1]).filter(Boolean))];
     const contracts = [...new Set(rows.map(r => r[7]).filter(Boolean))];
 
-    html += '<div style="margin-bottom:20px; padding:15px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:10px;">';
-
     // Dropdowns
-    html += '<div style="display:flex; gap:15px; margin-bottom:15px; flex-wrap:wrap;">';
-    html += '<select id="widgetCommodity" onchange="updateWidgets()" style="padding:8px 15px; border-radius:5px; border:none; font-size:14px; min-width:120px;">';
+    html += '<div class="dashboard-filters">';
+    html += '<select id="widgetCommodity" onchange="updateWidgets()">';
     html += '<option value="">All Commodities</option>';
     commodities.forEach(c => html += `<option value="${c}">${c}</option>`);
     html += '</select>';
-    html += '<select id="widgetContract" onchange="updateWidgets()" style="padding:8px 15px; border-radius:5px; border:none; font-size:14px; min-width:120px;">';
+    html += '<select id="widgetContract" onchange="updateWidgets()">';
     html += '<option value="">All Contracts</option>';
     contracts.forEach(c => html += `<option value="${c}">${c}</option>`);
     html += '</select>';
     html += '</div>';
 
     // Widget Cards Container
-    html += '<div id="widgetCards" style="display:flex; gap:15px; flex-wrap:wrap;">';
+    html += '<div class="widget-container">';
 
     // Calculate initial values (all data)
     const initialCalc = calculateWidgetValues(rows, '', '');
@@ -728,30 +726,28 @@ function renderDashboard(data) {
     // PNL Widget
     const pnlColor = initialCalc.pnl >= 0 ? '#27ae60' : '#e74c3c';
     const pnlSign = initialCalc.pnl >= 0 ? '+' : '';
-    html += `<div style="flex:1; min-width:150px; background:white; border-radius:8px; padding:15px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
-        <div style="font-size:11px; color:#666; margin-bottom:5px;">Hedging PNL</div>
-        <div id="widgetPNL" style="font-size:20px; font-weight:bold; color:${pnlColor};">${pnlSign}₹${Math.abs(initialCalc.pnl).toLocaleString('en-IN')}</div>
-        <div style="font-size:10px; color:#999;">${initialCalc.closedLots} closed lots</div>
+    html += `<div class="widget-card">
+        <div class="widget-label">Hedging PNL</div>
+        <div id="widgetPNL" class="widget-value" style="color:${pnlColor};">${pnlSign}₹${Math.abs(initialCalc.pnl).toLocaleString('en-IN')}</div>
+        <div class="widget-subtext">${initialCalc.closedLots} closed lots</div>
     </div>`;
 
-    // Brokerage Widget
-    html += `<div style="flex:1; min-width:150px; background:white; border-radius:8px; padding:15px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
-        <div style="font-size:11px; color:#666; margin-bottom:5px;">Brokerage</div>
-        <div id="widgetBrokerage" style="font-size:20px; font-weight:bold; color:#3498db;">₹${initialCalc.brokerage.toLocaleString('en-IN')}</div>
-        <div style="font-size:10px; color:#999;">${initialCalc.totalLots} total lots × ₹100</div>
+    // Brokerage Widget (no subtext as per user request)
+    html += `<div class="widget-card">
+        <div class="widget-label">Brokerage</div>
+        <div id="widgetBrokerage" class="widget-value" style="color:#3498db;">₹${initialCalc.brokerage.toLocaleString('en-IN')}</div>
     </div>`;
 
     // Net Position Widget
     const netColor = initialCalc.netPosition === 0 ? '#27ae60' : (initialCalc.netPosition > 0 ? '#e67e22' : '#e74c3c');
     const netStatus = initialCalc.netPosition === 0 ? 'Hedged' : (initialCalc.netPosition > 0 ? 'Open Short' : 'Over-hedged');
-    html += `<div style="flex:1; min-width:150px; background:white; border-radius:8px; padding:15px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
-        <div style="font-size:11px; color:#666; margin-bottom:5px;">Net Position</div>
-        <div id="widgetNetPos" style="font-size:20px; font-weight:bold; color:${netColor};">${Math.abs(initialCalc.netPosition)} lots</div>
-        <div style="font-size:10px; color:#999;">${netStatus}</div>
+    html += `<div class="widget-card">
+        <div class="widget-label">Net Position</div>
+        <div id="widgetNetPos" class="widget-value" style="color:${netColor};">${Math.abs(initialCalc.netPosition)} lots</div>
+        <div class="widget-subtext">${netStatus}</div>
     </div>`;
 
-    html += '</div>'; // widgetCards
-    html += '</div>'; // widgets section
+    html += '</div>'; // widget-container
 
     // ═══════════════════════════════════════════════════════════════════════
     // SECTION 1: Summary By Commodity & Contract (GREEN HEADER)

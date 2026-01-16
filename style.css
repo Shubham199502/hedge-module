@@ -3,9 +3,15 @@
   --secondary: #764ba2;
   --danger: #e74c3c;
   --success: #27ae60;
-  --dark: #2c3e50;
+  --warning: #f39c12;
+  --dark: #0f172a;
+  --dark-card: #1e293b;
   --light: #f0f0f0;
-  --border: #e8e8e8;
+  --border: rgba(255, 255, 255, 0.1);
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 * {
@@ -16,10 +22,19 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: var(--dark);
   padding: 15px;
   font-size: 13px;
   min-height: 100vh;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
 }
 
 .form-container {
@@ -261,21 +276,25 @@ button[type="submit"]:disabled {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, .6);
+  background: rgba(0, 0, 0, .7);
   z-index: 1000;
   animation: fadeIn .3s;
 }
 
 .modal-content {
-  background: #fff;
-  border-radius: 12px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
   max-width: 500px;
   margin: 40px auto;
   padding: 25px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, .3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   max-height: 80vh;
   overflow-y: auto;
   animation: slideDown .3s;
+  color: var(--text-primary);
 }
 
 .modal-header {
@@ -284,11 +303,11 @@ button[type="submit"]:disabled {
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 2px solid var(--light);
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .modal-header h3 {
-  color: var(--dark);
+  color: var(--text-primary);
   font-size: 18px;
 }
 
@@ -297,7 +316,7 @@ button[type="submit"]:disabled {
   border: 0;
   font-size: 24px;
   cursor: pointer;
-  color: #95a5a6;
+  color: var(--text-muted);
   padding: 0;
   width: 30px;
   height: 30px;
@@ -309,8 +328,8 @@ button[type="submit"]:disabled {
 }
 
 .close-btn:hover {
-  background: var(--light);
-  color: var(--dark);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
 }
 
 .calc-row {
@@ -782,5 +801,159 @@ button[type="submit"]:disabled {
 
   .modal-content {
     max-width: 550px
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DASHBOARD SPECIFIC STYLES (Glassmorphism Dark Mode)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.dashboard-modal .modal-content {
+  max-width: 95%;
+  width: 1200px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Widget Cards Container */
+.widget-container {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+/* Individual Widget Card with Glassmorphism */
+.widget-card {
+  flex: 1;
+  min-width: 180px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.widget-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.widget-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.widget-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.widget-subtext {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Dashboard Dropdown Filters */
+.dashboard-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.dashboard-filters select {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 10px 16px;
+  border-radius: 8px;
+  min-width: 160px;
+}
+
+.dashboard-filters select option {
+  background: var(--dark-card);
+  color: var(--text-primary);
+}
+
+/* Dashboard Tables */
+.dashboard-table-container {
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.dashboard-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-table tbody tr {
+  background: rgba(255, 255, 255, 0.02);
+  transition: background 0.2s;
+}
+
+.dashboard-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE (Dashboard)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .dashboard-modal .modal-content {
+    margin: 10px;
+    padding: 16px;
+    max-height: 95vh;
+  }
+
+  .widget-container {
+    flex-direction: column;
+  }
+
+  .widget-card {
+    min-width: 100%;
+  }
+
+  .dashboard-filters {
+    flex-direction: column;
+  }
+
+  .dashboard-filters select {
+    width: 100%;
+  }
+
+  .dashboard-table {
+    font-size: 11px;
+  }
+
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 8px 10px;
   }
 }
