@@ -785,8 +785,9 @@ function renderDashboard(data) {
     html += '</div>'; // widget-container
 
     // ═══════════════════════════════════════════════════════════════════════
-    // SECTION 1: Summary By Commodity & Contract (GREEN HEADER)
+    // SECTION 1: Contract Wise Net Positions (GREEN HEADER)
     // ═══════════════════════════════════════════════════════════════════════
+    html += '<div class="table-section-title"><span class="emoji">📋</span> Contract Wise Net Positions</div>';
     html += '<div style="margin-bottom:30px; overflow-x:auto;">';
     html += '<table style="width:100%; border-collapse:collapse; font-family:sans-serif; font-size:12px;">';
     html += '<thead><tr style="background:#27ae60; color:white; text-align:center;">';
@@ -820,8 +821,9 @@ function renderDashboard(data) {
     html += '</tbody></table></div>';
 
     // ═══════════════════════════════════════════════════════════════════════
-    // SECTION 2: Detailed Inventory (PURPLE HEADER)
+    // SECTION 2: Inventory Wise Net Positions (PURPLE HEADER)
     // ═══════════════════════════════════════════════════════════════════════
+    html += '<div class="table-section-title"><span class="emoji">📦</span> Inventory Wise Net Positions</div>';
     html += '<div style="margin-bottom:30px; overflow-x:auto;">';
     html += '<table style="width:100%; border-collapse:collapse; font-family:sans-serif; font-size:12px;">';
     html += '<thead><tr style="background:#764ba2; color:white; text-align:center;">';
@@ -859,7 +861,7 @@ function renderDashboard(data) {
     html += '</tbody></table></div>';
 
     // ═══════════════════════════════════════════════════════════════════════
-    // SECTION 3: Buy Transactions (Grouped by Inventory Code) (BLUE HEADER)
+    // SECTION 3: Closed Lots with Buyer Names (BLUE HEADER)
     // ═══════════════════════════════════════════════════════════════════════
     const groupedBuys = {};
     buyTransactions.forEach(bt => {
@@ -869,6 +871,7 @@ function renderDashboard(data) {
     });
 
     if (Object.keys(groupedBuys).length > 0) {
+        html += '<div class="table-section-title"><span class="emoji">🤝</span> Closed Lots with Buyer Names</div>';
         Object.keys(groupedBuys).forEach(code => {
             const txs = groupedBuys[code];
             const invData = inventory[code] || { sold: 0, avgPrice: 0 };
