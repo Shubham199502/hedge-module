@@ -45,16 +45,15 @@ body.light-mode .modal-content {
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-body.light-mode .dashboard-modal tr {
-  color: #2c3e50 !important;
+body.light-mode .dashboard-modal tbody tr {
+  color: #1a1a2e !important;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.85) !important;
 }
 
-body.light-mode .dashboard-modal td {
+body.light-mode .dashboard-modal tbody td {
   color: #1a1a2e !important;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.75) !important;
 }
 
 body.light-mode .dashboard-modal th {
