@@ -884,21 +884,21 @@ function renderDashboard(data) {
             const avgBuyPrice = txs.length > 0 ? (txs.reduce((sum, tx) => sum + (tx.lots * tx.avgPrice), 0) / totalBought) : 0;
 
             html += '<div style="margin-bottom:20px; overflow-x:auto;">';
-            html += '<table style="width:100%; border-collapse:collapse; font-family:sans-serif; font-size:12px;">';
+            html += '<table class="blue-table" style="width:100%; border-collapse:collapse; font-family:sans-serif; font-size:12px;">';
 
             // Header row with aggregated info
-            html += `<tr style="background:#3498db; color:white; text-align:left;">
+            html += `<thead><tr style="background:#3498db; color:white; text-align:left;">
                 <th style="padding:8px; border:1px solid #2980b9;">Inventory Code</th>
                 <th style="padding:8px; border:1px solid #2980b9;">Lots {${totalBought}}</th>
                 <th style="padding:8px; border:1px solid #2980b9;">Buyer</th>
                 <th style="padding:8px; border:1px solid #2980b9;">Supplier</th>
                 <th style="padding:8px; border:1px solid #2980b9;">Avg Price {${avgBuyPrice.toFixed(2)}}</th>
                 <th style="padding:8px; border:1px solid #2980b9;">Bought Date</th>
-            </tr>`;
+            </tr></thead><tbody>`;
 
             // Transaction rows
             txs.forEach(tx => {
-                html += `<tr style="background:rgba(52,152,219,0.15); color:#f8fafc; border:1px solid rgba(255,255,255,0.1);">
+                html += `<tr class="blue-data-row" style="background:rgba(52,152,219,0.15); color:#f8fafc; border:1px solid rgba(255,255,255,0.1);">
                     <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${tx.code}</td>
                     <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); text-align:center;">${tx.lots}</td>
                     <td style="padding:8px; border:1px solid rgba(255,255,255,0.1);">${tx.buyer}</td>
@@ -908,7 +908,7 @@ function renderDashboard(data) {
                 </tr>`;
             });
 
-            html += '</table></div>';
+            html += '</tbody></table></div>';
         });
     }
 

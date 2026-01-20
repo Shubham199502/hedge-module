@@ -61,6 +61,17 @@ body.light-mode .dashboard-modal th {
   font-weight: 700;
 }
 
+/* Blue table (Closed Lots) light mode fix */
+body.light-mode .blue-data-row {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #1a1a2e !important;
+}
+
+body.light-mode .blue-data-row td {
+  color: #1a1a2e !important;
+  font-weight: 600;
+}
+
 /* Table Section Titles */
 .table-section-title {
   font-size: 16px;
