@@ -37,6 +37,54 @@ document.addEventListener('DOMContentLoaded', initTheme);
 // Expose to window
 window.toggleTheme = toggleTheme;
 
+// ═══════════════════════════════════════════════════════════════════════
+// COMMODITY-BASED PRODUCT TYPE MAPPING
+// ═══════════════════════════════════════════════════════════════════════
+const PRODUCT_TYPE_MAP = {
+    'Al': ['IE07', 'IE10', 'T/Sows', 'SE07', 'Billets', 'Scrap'],
+    'Cu': ['Cathodes', 'Rods', 'Scrap'],
+    'Zn': ['SHG', 'HG', 'PW', 'Scrap']
+};
+
+function updateProductTypes() {
+    const commodity = document.getElementById('commodity').value;
+    const productTypeSelect = document.getElementById('productType');
+
+    // Clear existing options
+    productTypeSelect.innerHTML = '';
+
+    if (!commodity) {
+        productTypeSelect.innerHTML = '<option value="">First select Commodity...</option>';
+        productTypeSelect.disabled = true;
+        return;
+    }
+
+    // Get product types for selected commodity
+    const productTypes = PRODUCT_TYPE_MAP[commodity] || [];
+
+    // Add placeholder
+    productTypeSelect.innerHTML = '<option value="">Select product type...</option>';
+
+    // Add options
+    productTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        productTypeSelect.appendChild(option);
+    });
+
+    productTypeSelect.disabled = false;
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const commoditySelect = document.getElementById('commodity');
+    if (commoditySelect) {
+        commoditySelect.addEventListener('change', updateProductTypes);
+    }
+});
+
+
 // 🔴 Google Apps Script Web App URL (used directly by Vercel API proxy)
 const GAS_API_URL_RAW = 'https://script.google.com/macros/s/AKfycbwdm7GvLT81vvsWuhMQNWuZfYRT1S45-hju1YEpVKxcH-Qnzm91KJOtigBL-nV1JiTvTQ/exec';
 
