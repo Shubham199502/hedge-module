@@ -142,15 +142,22 @@ body.light-mode .form-container {
   border-bottom: 1px solid var(--glass-border);
   color: #f8fafc !important;
   font-size: 12px;
+  font-weight: 500;
 }
 
 .inventory-selection-table tbody tr {
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(30, 41, 59, 0.9) !important;
   color: #f8fafc !important;
 }
 
+.inventory-selection-table .inv-code,
+.inventory-selection-table .inv-available {
+  color: #f8fafc !important;
+  font-weight: 600;
+}
+
 .inventory-selection-table tbody tr:hover {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(102, 126, 234, 0.3) !important;
 }
 
 .inventory-selection-table input[type="checkbox"] {
